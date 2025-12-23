@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Get user by id",
+    "method": "GET",
+    "endpoint": "/users/1",
+    "expected_status": 200,
+    "expected_fields": ["id", "name", "email"]
+  },
+  {
+    "name": "Get invalid user",
+    "method": "GET",
+    "endpoint": "/users/9999",
+    "expected_status": 404,
+    "expected_fields": []
+  },
+  {
+    "name": "Get posts",
+    "method": "GET",
+    "endpoint": "/posts",
+    "expected_status": 200,
+    "expected_fields": ["userId", "id", "title", "body"]
+  },
+  {
+    "name": "Invalid endpoint",
+    "method": "GET",
+    "endpoint": "/invalid-endpoint",
+    "expected_status": 404,
+    "expected_fields": []
+  }
+]
