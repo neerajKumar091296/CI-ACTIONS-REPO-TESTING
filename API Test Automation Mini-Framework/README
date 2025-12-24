@@ -1,0 +1,182 @@
+--derived from chatgpt
+
+📘 API Test Automation Mini Framework
+📌 Overview
+
+This project is a Python-based API test automation framework built to demonstrate real-world SDET practices such as:
+
+Token-based authentication
+
+Centralized HTTP handling
+
+Retry logic for flaky APIs
+
+Pytest fixtures for clean test setup
+
+Structured logging
+
+The framework is designed to keep test cases simple, while moving complexity into reusable infrastructure components.
+
+🏗️ Project Structure
+api_framework/
+├── auth/
+│   ├── __init__.py
+│   └── token_manager.py
+│
+├── client/
+│   ├── __init__.py
+│   └── http_client.py
+│
+├── utils/
+│   ├── __init__.py
+│   └── logger.py
+│
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py
+│   └── test_current_user.py
+│
+├── requirements.txt
+└── README.md
+
+🔐 Authentication Design
+Authentication Flow
+
+Login once using credentials
+
+Receive an access token
+
+Reuse the token for all authenticated API requests
+
+Avoid logging in for every request
+
+TokenManager
+
+The TokenManager class is responsible for:
+
+Performing login
+
+Storing the access token in memory
+
+Returning the token when required
+
+Tests → HttpClient → TokenManager → API
+
+
+Login logic is encapsulated, so tests never deal with credentials directly.
+
+🌐 HttpClient
+
+The HttpClient is the single entry point for making HTTP requests.
+
+Responsibilities:
+
+Build full URLs
+
+Attach authentication headers automatically
+
+Apply retry logic
+
+Handle timeouts
+
+Tests do not use the requests library directly.
+
+🔁 Retry Logic
+
+Retry logic is implemented inside HttpClient to handle temporary failures.
+
+Retried Scenarios
+
+Network exceptions (timeouts, connection errors)
+
+Server errors (5xx)
+
+Not Retried
+
+4xx errors (authentication issues, bad requests)
+
+Retries are limited and include a delay to avoid overwhelming the server.
+
+🧪 Pytest Fixtures
+
+Pytest fixtures are used to centralize setup logic.
+
+Fixtures Provided
+
+token_manager – handles authentication
+
+auth_client – ready-to-use authenticated HTTP client
+
+This keeps test cases focused only on assertions.
+
+Example test:
+
+def test_get_current_user(auth_client):
+    response = auth_client.get("/auth/me")
+
+    assert response.status_code == 200
+    assert response.json()["username"] == "emilys"
+
+🪵 Logging
+
+The framework uses Python’s built-in logging module instead of print().
+
+Benefits:
+
+Structured output
+
+Log levels (INFO, WARNING, ERROR)
+
+CI-friendly logs
+
+Easier debugging
+
+Sensitive information such as tokens is not logged.
+
+▶️ How to Run Tests
+1️⃣ Install dependencies
+pip install -r requirements.txt
+
+2️⃣ Run tests from project root
+pytest -v
+
+🎯 Key Design Principles
+
+Separation of concerns
+
+Reusable infrastructure
+
+Clean test code
+
+Fail fast on real issues
+
+Retry only when failures are transient
+
+📌 What This Project Demonstrates
+
+Real-world API authentication handling
+
+Framework-level retry strategy
+
+Proper pytest usage
+
+Python package structuring
+
+SDET-oriented design thinking
+
+🚀 Possible Enhancements
+
+Token expiration handling
+
+CI integration (GitHub Actions)
+
+Request/response schema validation
+
+Environment-based configuration
+
+Reporting (HTML / JSON)
+
+🧠 Author Notes
+
+This project was built incrementally with a focus on clarity and correctness, rather than over-engineering.
+It is intended as a learning and interview-preparation framework for SDET and automation roles.

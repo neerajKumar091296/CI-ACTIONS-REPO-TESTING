@@ -4,6 +4,7 @@ from operator import truediv
 import  os
 from Client.http_client import *
 from validators.response_validator import validate_response
+from tests.test_current_user import test_get_current_user
 
 
 def load_environment_configuration():
@@ -78,34 +79,7 @@ def run_tests():
     print(f"Passed: {passed}")
     print(f"Failed: {failed}")
 
-def login_and_get_token(base_url: str, username: str, password: str) -> str:
-    url = f"{base_url}/auth/login"
 
-    payload = {
-        "username": username,
-        "password": password
-    }
-
-    headers = {
-        "Content-Type": "application/json"
-    }
-
-    response = requests.post(url, json=payload, headers=headers, timeout=10)
-
-    if response.status_code != 200:
-        raise RuntimeError(
-            f"Login failed ({response.status_code}): {response.text}"
-        )
-
-    try:
-        token = response.json().get("accessToken")
-    except ValueError:
-        raise RuntimeError("Login response is not valid JSON")
-
-    if not token:
-        raise RuntimeError("Token not found in response")
-
-    return token
 
 def write_report(result,passed,failed):
     report = {
@@ -125,7 +99,6 @@ def write_report(result,passed,failed):
     print(f"Passed: {passed}")
     print(f"Failed: {failed}")
     print("Report written to report/results.json")
-
 
 def get_current_user(base_url:str,access_token:str):
     url = f"{base_url}/auth/me"
@@ -149,11 +122,5 @@ def get_current_user(base_url:str,access_token:str):
 
 
 if __name__=="__main__":
-
-     token = login_and_get_token(
-        base_url="https://dummyjson.com",
-        username="emilys",
-        password="emilyspass")
-     print(token)
-     user = get_current_user(base_url="https://dummyjson.com",access_token=token)
-     print(user)
+    test_get_current_user()
+    
